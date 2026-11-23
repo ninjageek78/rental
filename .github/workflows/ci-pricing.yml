@@ -80,8 +80,20 @@ jobs:
       - name: Run Ruff
         working-directory: apps/pricing-service
         run: |
-          python -m ruff check app tests
-          python -m ruff format --check app tests
+          mkdir -p build/quality-results
+          CHECK_STATUS=0
+          python -m ruff check --output-format=junit --output-file=build/quality-results/ruff-junit.xml app tests || CHECK_STATUS=$?
+          python -m ruff format --check app tests || FORMAT_STATUS=$?
+          exit "${FORMAT_STATUS:-$CHECK_STATUS}"
+      
+      - name: Upload quality reports
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: python-quality-reports
+          path: apps/pricing-service/build/quality-results/
+          if-no-files-found: warn
+          retention-days: 7
 
   docker:
     name: Python Docker image
