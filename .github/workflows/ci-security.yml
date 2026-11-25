@@ -24,10 +24,12 @@ jobs:
     steps:
       - name: Checkout complete history
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        #Usage d'un hash, la référence est donc immuable
         with:
           fetch-depth: 0
 
       - name: Scan Git history with Gitleaks
         uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
+        #Usage d'un hash, la référence est donc immuable
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
